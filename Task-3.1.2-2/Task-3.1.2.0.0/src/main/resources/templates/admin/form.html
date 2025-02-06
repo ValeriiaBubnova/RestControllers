@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form</title>
+</head>
+<body>
+<a href="/logout" class="logout">Logout</a>
+<h1>User Form</h1>
+<form th:action="@{/admin}" th:object="${user}" method="post">
+  <input type="hidden" th:field="*{id}" />
+  <div>
+    <label for="username">First Name:</label>
+    <input type="text" id="username" th:field="*{username}" />
+  </div>
+  <div>
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" />
+  </div>
+
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" th:field="*{password}" />
+  </div>
+  <div>
+    <label for="roles">Roles:</label>
+    <select id="roles" th:field="*{roles}" multiple>
+      <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"
+              th:selected="${user.roles != null and user.roles.contains(role)}"></option>
+    </select>
+  </div>
+
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
