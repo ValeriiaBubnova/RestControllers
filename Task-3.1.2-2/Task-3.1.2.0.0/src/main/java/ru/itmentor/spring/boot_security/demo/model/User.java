@@ -39,7 +39,7 @@ public class User implements UserDetails {
     @Size(min = 6, message = "Password must be more than 6 characters")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = {@JoinColumn(name = "user_id")},

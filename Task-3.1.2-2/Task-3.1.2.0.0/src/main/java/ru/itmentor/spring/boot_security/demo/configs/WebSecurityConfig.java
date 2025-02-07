@@ -7,10 +7,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 
 @Configuration
@@ -34,19 +36,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/login", "/error").permitAll()
                 .anyRequest().hasAnyRole("ADMIN")
                 .and()
-                .formLogin()
-                .loginPage("/auth/login")
-                .loginProcessingUrl("/process_login")
-                .failureUrl("/auth/login?error")
-                .successHandler(successUserHandler)
-                .permitAll()
+                .httpBasic() //для простой аутентификации в постмане
                 .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/auth/login")
                 .permitAll();
     }
-
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+        return new InMemoryUserDetailsManager(
+                User.withUsername("admin").password("admin").roles("ADMIN").build(),
+                User.withUsername("user").password("user").roles("USER").build());
+    }
 
     //настраиваем аутентификацию
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
